@@ -18,7 +18,7 @@ export default function Home() {
     {
       icon: <Heart className="w-8 h-8" />,
       title: '记忆录入',
-      description: '录入宠物的生命故事、性格特征和珍贵回忆，构建完整的数字生命档案',
+      description: '录入宠物的生命故事、性格特征和珍贵照片，AI将为您生成栩栩如生的2D动态数字伴侣',
       href: '/onboarding',
       color: 'from-primary-500 to-primary-600'
     },
@@ -110,7 +110,7 @@ export default function Home() {
                 href="/onboarding"
                 className="group px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center space-x-2"
               >
-                <span>开始创建记忆</span>
+                <span>开始创建数字宠物</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
 
