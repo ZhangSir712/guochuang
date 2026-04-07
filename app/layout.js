@@ -1,4 +1,5 @@
 import './globals.css'
+import { PetReconstructionProvider } from '../context/PetReconstructionContext'
 
 export const metadata = {
   title: '宠智灵境 - AI驱动的数字宠物与情感疗愈平台',
@@ -9,7 +10,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="zh-CN">
       <body>
-        {children}
+        <PetReconstructionProvider>
+          {children}
+        </PetReconstructionProvider>
       </body>
     </html>
   )
