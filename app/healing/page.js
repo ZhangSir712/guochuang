@@ -82,7 +82,7 @@ const Healing = () => {
                   <Calendar className="w-5 h-5 text-primary-500" />
                 </div>
                 <div className="bg-primary-50 rounded-xl p-5">
-                  <p className="text-gray-700 italic">"{randomAffirmation}"</p>
+                  <p className="text-gray-700 italic">&ldquo;{randomAffirmation}&rdquo;</p>
                 </div>
               </div>
 

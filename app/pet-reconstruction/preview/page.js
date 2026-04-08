@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Navbar from '../../../components/Navbar'
 import AnimatedPet from '../../../components/AnimatedPet'
+import PetVoiceInteraction from '../../../components/PetVoiceInteraction'
 import { openDesktopPet } from '../desktop/page'
 import { PetReconstructionProvider, usePetReconstruction } from '../../../context/PetReconstructionContext'
 import {
@@ -19,7 +20,8 @@ import {
   Play,
   Pause,
   Gauge,
-  Sparkles
+  Sparkles,
+  MessageCircle
 } from 'lucide-react'
 
 function PreviewContent() {
@@ -27,6 +29,7 @@ function PreviewContent() {
   const [showAnimation, setShowAnimation] = useState(true)
   const [animationSpeed, setAnimationSpeed] = useState(1)
   const [petSize, setPetSize] = useState('medium')
+  const [showVoiceInteraction, setShowVoiceInteraction] = useState(false)
 
   const handleOpenDesktop = () => {
     if (generatedImage) {
@@ -155,6 +158,26 @@ function PreviewContent() {
                 </div>
               </div>
 
+              {showVoiceInteraction && (
+                <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                  <div className="p-4 bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-between">
+                    <h3 className="text-lg font-bold text-white flex items-center">
+                      <MessageCircle className="w-5 h-5 mr-2" />
+                      语音交互
+                    </h3>
+                    <button
+                      onClick={() => setShowVoiceInteraction(false)}
+                      className="text-white/80 hover:text-white transition-colors"
+                    >
+                      收起
+                    </button>
+                  </div>
+                  <div className="p-4">
+                    <PetVoiceInteraction />
+                  </div>
+                </div>
+              )}
+
               <div className="bg-white rounded-2xl shadow-lg p-6">
                 <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
                   <Gauge className="w-5 h-5 mr-2 text-purple-500" />
@@ -251,13 +274,37 @@ function PreviewContent() {
                 </div>
               </div>
 
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl shadow-lg p-6 border border-purple-200">
+                <h3 className="text-lg font-bold text-purple-800 mb-3 flex items-center">
+                  <MessageCircle className="w-5 h-5 mr-2" />
+                  语音交互模式
+                </h3>
+                <p className="text-sm text-purple-700 mb-4 leading-relaxed">
+                  和您的数字宠物对话！支持语音识别、AI智能回应、语音合成等功能，
+                  让宠物成为您的贴心伙伴。
+                </p>
+                <button
+                  onClick={() => setShowVoiceInteraction(true)}
+                  disabled={!generatedImage}
+                  className="w-full flex items-center justify-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  <span>开始对话</span>
+                </button>
+                {!generatedImage && (
+                  <p className="text-xs text-purple-600 mt-2 text-center">
+                    ⚠️ 请先生成宠物形象
+                  </p>
+                )}
+              </div>
+
               <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl shadow-lg p-6 border border-orange-200">
                 <h3 className="text-lg font-bold text-orange-800 mb-3 flex items-center">
                   <Monitor className="w-5 h-5 mr-2" />
                   桌面宠物模式
                 </h3>
                 <p className="text-sm text-orange-700 mb-4 leading-relaxed">
-                  将您的数字宠物放到桌面上！支持拖拽、点击互动、始终置顶等功能，
+                  将您的数字宠物放到桌面上！支持拖拽、点击互动、语音交互、始终置顶等功能，
                   让宠物陪伴您工作的每一刻。
                 </p>
                 <button

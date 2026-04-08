@@ -6,6 +6,7 @@ const PetReconstructionContext = createContext(null)
 
 const STORAGE_KEY_FILES = 'pet-reconstruction-files'
 const STORAGE_KEY_CONFIG = 'pet-reconstruction-config'
+const STORAGE_KEY_GENERATED_IMAGE = 'pet-reconstruction-generated-image'
 
 function loadFromStorage(key, defaultValue) {
   if (typeof window === 'undefined') return defaultValue
@@ -48,13 +49,15 @@ export function PetReconstructionProvider({ children }) {
   useEffect(() => {
     const storedFiles = loadFromStorage(STORAGE_KEY_FILES, [])
     const storedConfig = loadFromStorage(STORAGE_KEY_CONFIG, config)
-    
+    const storedGeneratedImage = loadFromStorage(STORAGE_KEY_GENERATED_IMAGE, null)
+
     setFilesState(storedFiles.map(file => ({
       ...file,
       file: undefined,
       previewUrl: file.dataUrl || null
     })))
     setConfigState(storedConfig)
+    setGeneratedImage(storedGeneratedImage)
     setIsMounted(true)
   }, [])
   const [generatedImage, setGeneratedImage] = useState(null)
@@ -76,6 +79,7 @@ export function PetReconstructionProvider({ children }) {
 
   const updateGeneratedImage = useCallback((image) => {
     setGeneratedImage(image)
+    saveToStorage(STORAGE_KEY_GENERATED_IMAGE, image)
   }, [])
 
   const resetState = useCallback(() => {
@@ -100,6 +104,7 @@ export function PetReconstructionProvider({ children }) {
     setCurrentStep(1)
     saveToStorage(STORAGE_KEY_FILES, emptyFiles)
     saveToStorage(STORAGE_KEY_CONFIG, defaultConfig)
+    saveToStorage(STORAGE_KEY_GENERATED_IMAGE, null)
   }, [])
 
   useEffect(() => {

@@ -149,7 +149,7 @@ const Farewell = () => {
                   </div>
                 ) : (
                   <div className="text-center">
-                    <p className="text-gray-300 mb-4">点击左侧的"生成预览"按钮，开始创建您宠物的数字形象</p>
+                    <p className="text-gray-300 mb-4">点击左侧的&ldquo;生成预览&rdquo;按钮，开始创建您宠物的数字形象</p>
                     <div className="w-48 h-48 bg-gray-700 rounded-lg mx-auto flex items-center justify-center">
                       <Camera className="w-12 h-12 text-gray-500" />
                     </div>

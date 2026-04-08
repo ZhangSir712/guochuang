@@ -33,12 +33,15 @@ export default function AnimatedPet({ imageUrl, config = {} }) {
     speed = 1,
     size = 'medium',
     showMessages = true,
+    interactionState = 'idle',
+    customMessage = null,
   } = config
 
   const [isBlinking, setIsBlinking] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [currentMessage, setCurrentMessage] = useState(null)
   const [clickAnimation, setClickAnimation] = useState(false)
+  const [displayMessage, setDisplayMessage] = useState(null)
 
   const containerRef = useRef(null)
   const blinkTimeoutRef = useRef(null)
@@ -126,13 +129,21 @@ export default function AnimatedPet({ imageUrl, config = {} }) {
     setClickAnimation(true)
     setTimeout(() => setClickAnimation(false), 600)
 
-    if (showMessages) {
+    if (showMessages && !customMessage) {
       const messages = ['喜欢你！', '开心~', '继续点我呀!', '嘿嘿', '🥰']
       const msg = messages[Math.floor(Math.random() * messages.length)]
       setCurrentMessage(msg)
       setTimeout(() => setCurrentMessage(null), 1500)
     }
-  }, [showMessages])
+  }, [showMessages, customMessage])
+
+  useEffect(() => {
+    if (customMessage) {
+      setDisplayMessage(customMessage)
+    } else {
+      setDisplayMessage(null)
+    }
+  }, [customMessage])
 
   const breatheStyle = enableBreathe
     ? {
@@ -152,10 +163,32 @@ export default function AnimatedPet({ imageUrl, config = {} }) {
       }
     : {}
 
+  const listeningStyle = interactionState === 'listening'
+    ? {
+        animation: `petListening 1.5s ease-in-out infinite`,
+        filter: 'brightness(1.05) saturate(1.1)',
+      }
+    : {}
+
+  const thinkingStyle = interactionState === 'thinking'
+    ? {
+        animation: `petThinking 2s ease-in-out infinite`,
+      }
+    : {}
+
+  const speakingStyle = interactionState === 'speaking'
+    ? {
+        animation: `petSpeaking 0.3s ease-in-out infinite`,
+      }
+    : {}
+
   const combinedAnimationStyle = {
     ...breatheStyle,
     ...idleStyle,
     ...clickStyle,
+    ...listeningStyle,
+    ...thinkingStyle,
+    ...speakingStyle,
   }
 
   return (
@@ -188,17 +221,35 @@ export default function AnimatedPet({ imageUrl, config = {} }) {
         )}
       </div>
 
-      {currentMessage && (
+      {(currentMessage || displayMessage) && (
         <div
           className={`absolute -top-12 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-full shadow-lg border-2 border-primary-200 animate-bounce whitespace-nowrap z-10`}
         >
           <div className="flex items-center space-x-1 text-sm font-medium text-gray-700">
             <MessageCircle className="w-4 h-4 text-primary-500" />
-            <span>{currentMessage}</span>
+            <span>{displayMessage || currentMessage}</span>
           </div>
           <div
             className={`absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-white`}
           />
+        </div>
+      )}
+
+      {interactionState === 'thinking' && (
+        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 z-20">
+          <div className="bg-yellow-100 px-3 py-1 rounded-full shadow-md border border-yellow-300 animate-pulse">
+            <span className="text-lg">🤔</span>
+          </div>
+        </div>
+      )}
+
+      {interactionState === 'listening' && (
+        <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-20">
+          <div className="flex items-center space-x-1 bg-blue-100 px-2 py-1 rounded-full shadow-md border border-blue-300">
+            <span className="w-1.5 h-3 bg-blue-500 rounded-full animate-pulse" style={{ animationDelay: '0ms' }}></span>
+            <span className="w-1.5 h-4 bg-blue-500 rounded-full animate-pulse" style={{ animationDelay: '150ms' }}></span>
+            <span className="w-1.5 h-3 bg-blue-500 rounded-full animate-pulse" style={{ animationDelay: '300ms' }}></span>
+          </div>
         </div>
       )}
 

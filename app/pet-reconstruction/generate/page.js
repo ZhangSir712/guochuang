@@ -186,6 +186,7 @@ export default function GeneratePage() {
       const result = await callVolcengineAPI()
 
       setResultUrl(result.url)
+      setGeneratedImage(result.url)
       const endTime = Date.now()
       setGenerationTime(((endTime - startTime) / 1000).toFixed(1))
       setGenerationState(generationStates.COMPLETED)

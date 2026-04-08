@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import AnimatedPet from '../../../components/AnimatedPet'
+import PetVoiceInteraction from '../../../components/PetVoiceInteraction'
 import {
   X,
   Minus,
@@ -11,6 +12,8 @@ import {
   GripVertical,
   Info,
   Zap,
+  MessageCircle,
+  Keyboard,
 } from 'lucide-react'
 
 export function openDesktopPet(imageUrl, config = {}) {
@@ -56,6 +59,9 @@ function DesktopPetContent() {
   const [showSettings, setShowSettings] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
   const [currentSize, setCurrentSize] = useState('medium')
+  const [showVoiceInteraction, setShowVoiceInteraction] = useState(false)
+  const [interactionState, setInteractionState] = useState('idle')
+  const [customMessage, setCustomMessage] = useState(null)
   const containerRef = useRef(null)
 
   useEffect(() => {
@@ -84,7 +90,19 @@ function DesktopPetContent() {
       } catch (e) {}
     }, 5000)
 
-    return () => clearInterval(keepFocus)
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+        e.preventDefault()
+        setShowVoiceInteraction(true)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      clearInterval(keepFocus)
+      window.removeEventListener('keydown', handleKeyDown)
+    }
   }, [])
 
   useEffect(() => {
@@ -119,7 +137,7 @@ function DesktopPetContent() {
 
   const handleMouseDown = useCallback(
     (e) => {
-      if (e.target.closest('.toolbar') || e.target.closest('.settings-panel')) return
+      if (e.target.closest('.toolbar') || e.target.closest('.settings-panel') || e.target.closest('.voice-panel')) return
 
       setIsDragging(true)
       setDragStart({ x: e.clientX, y: e.clientY })
@@ -127,6 +145,11 @@ function DesktopPetContent() {
     },
     []
   )
+
+  const handleContextMenu = useCallback((e) => {
+    e.preventDefault()
+    setShowSettings(true)
+  }, [])
 
   const handleClose = useCallback(() => {
     if (typeof window !== undefined && window.close) {
@@ -179,6 +202,7 @@ function DesktopPetContent() {
         background: 'transparent',
       }}
       onMouseDown={handleMouseDown}
+      onContextMenu={handleContextMenu}
       ref={containerRef}
     >
       {!isMinimized && (
@@ -194,6 +218,8 @@ function DesktopPetContent() {
               config={{
                 ...petConfig,
                 size: currentSize,
+                interactionState,
+                customMessage,
               }}
             />
           </div>
@@ -233,6 +259,18 @@ function DesktopPetContent() {
               </button>
 
               <button
+                onClick={() => setShowVoiceInteraction(!showVoiceInteraction)}
+                className={`p-1.5 rounded transition-colors ${
+                  showVoiceInteraction
+                    ? 'bg-purple-500 text-white'
+                    : 'text-gray-300 hover:bg-purple-500/80 hover:text-white'
+                }`}
+                title="语音交互 (Ctrl+Shift+P)"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+              </button>
+
+              <button
                 onClick={() => setShowSettings(!showSettings)}
                 className={`p-1.5 rounded transition-colors ${
                   showSettings
@@ -251,6 +289,31 @@ function DesktopPetContent() {
               >
                 <X className="w-3.5 h-3.5" />
               </button>
+            </div>
+          )}
+
+          {showVoiceInteraction && (
+            <div
+              className={`voice-panel absolute top-12 right-2 w-80 bg-white/95 backdrop-blur-lg rounded-xl shadow-2xl p-4 z-30 border border-purple-200 max-h-96 overflow-y-auto`}
+              onMouseEnter={() => setShowVoiceInteraction(true)}
+              onMouseLeave={() => setShowVoiceInteraction(false)}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-bold text-gray-800 flex items-center">
+                  <MessageCircle className="w-4 h-4 mr-2 text-purple-500" />
+                  语音交互
+                </h3>
+                <button
+                  onClick={() => setShowVoiceInteraction(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <PetVoiceInteraction
+                onStateChange={setInteractionState}
+                onMessage={setCustomMessage}
+              />
             </div>
           )}
 
@@ -293,6 +356,10 @@ function DesktopPetContent() {
                       <p className="mt-1 text-primary-600">
                         <Zap className="w-3 h-3 inline mr-1" />
                         拖拽移动 · 点击互动
+                      </p>
+                      <p className="mt-1 text-purple-600">
+                        <Keyboard className="w-3 h-3 inline mr-1" />
+                        Ctrl+Shift+P 语音交互
                       </p>
                     </div>
                   </div>

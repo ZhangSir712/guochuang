@@ -229,7 +229,7 @@ function OnboardingContent() {
                   <div className="max-w-2xl mx-auto mt-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
                     <p className="text-sm text-blue-800 flex items-start">
                       <Sparkles className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
-                      <span><strong>提示：</strong>选择的性格标签会影响生成宠物的表情和动作风格。例如选择"粘人亲昵"会让宠物更多地显示依恋的表情。</span>
+                      <span><strong>提示：</strong>选择的性格标签会影响生成宠物的表情和动作风格。例如选择&ldquo;粘人亲昵&rdquo;会让宠物更多地显示依恋的表情。</span>
                     </p>
                   </div>
                 </div>
